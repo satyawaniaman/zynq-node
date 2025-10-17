@@ -43,23 +43,6 @@ export default function DashboardPage() {
             )}
           </div>
 
-          {/* Dashboard Content */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
-              <h3 className="text-lg font-semibold mb-2">Analytics</h3>
-              <p className="text-gray-400">View your analytics and insights</p>
-            </div>
-
-            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
-              <h3 className="text-lg font-semibold mb-2">Settings</h3>
-              <p className="text-gray-400">Manage your account settings</p>
-            </div>
-
-            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
-              <h3 className="text-lg font-semibold mb-2">Reports</h3>
-              <p className="text-gray-400">Generate and view reports</p>
-            </div>
-          </div>
         </div>
       </div>
     </ProtectedRoute>

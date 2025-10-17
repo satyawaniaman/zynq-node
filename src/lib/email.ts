@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import { EmailVerificationTemplate } from "@/components/email-verification-template";
+import { EmailOTPTemplate } from "@/components/email-otp-template";
 
 // Initialize Resend with API key
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -52,6 +53,21 @@ export async function sendVerificationEmail(
     subject: "Verify Your Email Address - Zynq Node",
     react: EmailVerificationTemplate({
       verificationUrl,
+      userEmail: to,
+    }),
+  });
+}
+
+// Send OTP verification email using React template
+export async function sendOTPVerificationEmail(
+  to: string,
+  otp: string,
+) {
+  return sendEmail({
+    to,
+    subject: "Your Verification Code - Zynq Node",
+    react: EmailOTPTemplate({
+      otp,
       userEmail: to,
     }),
   });

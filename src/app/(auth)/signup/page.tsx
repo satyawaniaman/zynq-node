@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { RedirectIfAuthenticated } from "@/components/auth/redirect-if-authenticated";
+import { OTPVerification } from "@/components/auth/otp-verification";
 
 export default function SignupPage() {
   const [name, setName] = useState("");
@@ -15,8 +16,8 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [showVerificationMessage, setShowVerificationMessage] = useState(false);
-  const _router = useRouter();
+  const [showOTPVerification, setShowOTPVerification] = useState(false);
+  const router = useRouter();
 
   const handleEmailSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,8 +35,8 @@ export default function SignupPage() {
       if (result.error) {
         setError(result.error.message || "Sign up failed");
       } else {
-        // Show verification message instead of redirecting
-        setShowVerificationMessage(true);
+        // Show OTP verification instead of redirecting
+        setShowOTPVerification(true);
       }
     } catch (_err) {
       setError("An unexpected error occurred");
@@ -70,8 +71,8 @@ export default function SignupPage() {
     }
   };
 
-  // Show verification message if signup was successful
-  if (showVerificationMessage) {
+  // Show OTP verification if signup was successful
+  if (showOTPVerification) {
     return (
       <div className="min-h-screen bg-black w-full relative">
         {/* Midnight Radial Glow Background */}
@@ -89,58 +90,12 @@ export default function SignupPage() {
           }}
         />
         <section className="flex min-h-screen px-4 py-16 md:py-32 relative z-10">
-          <div className="bg-black/20 backdrop-blur-sm m-auto h-fit w-full max-w-md rounded-[calc(var(--radius)+.125rem)] border border-white/10 p-6 shadow-2xl text-center">
-            <div className="mb-6">
-              <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg
-                  className="w-8 h-8 text-green-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <title>Email verification icon</title>
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  />
-                </svg>
-              </div>
-              <h1 className="text-2xl font-bold text-white mb-2">
-                Check Your Email
-              </h1>
-              <p className="text-gray-300 mb-4">
-                We've sent a verification link to{" "}
-                <span className="font-medium text-white">{email}</span>
-              </p>
-              <p className="text-sm text-gray-400 mb-6">
-                Please check your email and click the verification link to
-                complete your registration. The link will expire in 24 hours.
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              <Button
-                onClick={() => setShowVerificationMessage(false)}
-                variant="outline"
-                className="w-full border-white/20 hover:bg-white/10"
-              >
-                Back to Sign Up
-              </Button>
-
-              <div className="text-center">
-                <p className="text-sm text-gray-400">
-                  Already verified?{" "}
-                  <Link
-                    href="/login"
-                    className="text-blue-300 hover:text-blue-200 underline"
-                  >
-                    Sign In
-                  </Link>
-                </p>
-              </div>
-            </div>
+          <div className="bg-black/20 backdrop-blur-sm m-auto h-fit w-full max-w-md rounded-[calc(var(--radius)+.125rem)] border border-white/10 p-6 shadow-2xl">
+            <OTPVerification
+              email={email}
+              onBack={() => setShowOTPVerification(false)}
+              onSuccess={() => router.push("/dashboard")}
+            />
           </div>
         </section>
       </div>

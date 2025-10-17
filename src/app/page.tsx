@@ -22,7 +22,8 @@ function Users() {
 
 export default async function Home() {
   const queryClient = getQueryClient();
-  void queryClient.prefetchQuery(trpc.getUsers.queryOptions());
+  // Note: getAllUsers requires admin role, so we'll skip prefetching for now
+  // void queryClient.prefetchQuery(trpc.getAllUsers.queryOptions());
   return (
     <div className="min-h-screen flex flex-col items-center justify-center min-w-screen">
       <HydrationBoundary state={dehydrate(queryClient)}>
