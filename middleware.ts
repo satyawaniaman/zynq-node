@@ -1,5 +1,34 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+
+// Lightweight session validation for edge runtime
+async function validateSession(request: NextRequest) {
+  try {
+    // Get session cookie
+    const sessionCookie = request.cookies.get("better-auth.session_token");
+    
+    if (!sessionCookie) {
+      return null;
+    }
+
+    // Make a lightweight API call to validate session
+    const baseUrl = process.env.BETTER_AUTH_URL || request.nextUrl.origin;
+    const response = await fetch(`${baseUrl}/api/auth/get-session`, {
+      headers: {
+        Cookie: request.headers.get("cookie") || "",
+      },
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const session = await response.json();
+    return session;
+  } catch (error) {
+    console.error("Session validation error:", error);
+    return null;
+  }
+}
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -19,10 +48,8 @@ export async function middleware(request: NextRequest) {
   );
 
   try {
-    // Get session from Better Auth
-    const session = await auth.api.getSession({
-      headers: request.headers,
-    });
+    // Get session using lightweight validation
+    const session = await validateSession(request);
 
     // If accessing a protected route
     if (isProtectedRoute) {
