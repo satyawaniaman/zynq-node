@@ -11,11 +11,18 @@ export function useAuth() {
     }
   };
 
+  // Check if user exists and email is verified
+  const isAuthenticated = !!(
+    session.data?.user && 
+    session.data.user.emailVerified
+  );
+
   return {
     user: session.data?.user || null,
     session: session.data,
     isLoading: session.isPending,
-    isAuthenticated: !!session.data?.user,
+    isAuthenticated,
+    isEmailVerified: session.data?.user?.emailVerified || false,
     signOut,
   };
 }

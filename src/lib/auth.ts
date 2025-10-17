@@ -12,21 +12,7 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
-  },
-  emailVerification: {
-    sendOnSignUp: true,
-    sendVerificationEmail: async ({
-      user,
-      url,
-    }: {
-      user: any;
-      url: string;
-    }) => {
-      await sendVerificationEmail(user.email, url);
-    },
-    onVerified: async ({ user }: { user: any }) => {
-      console.log(`Email verified for user: ${user.email}`);
-    },
+    autoSignInAfterSignUp: false, // Prevent auto sign-in after signup
   },
   plugins: [
     emailOTP({
@@ -41,6 +27,17 @@ export const auth = betterAuth({
       },
     }),
   ],
+  emailVerification: {
+    sendOnSignUp: false, // We handle this with emailOTP
+    onVerified: async ({ user }: { user: any }) => {
+      console.log(`Email verified for user: ${user.email}`);
+      // Update the user's emailVerified status
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { emailVerified: true },
+      });
+    },
+  },
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,

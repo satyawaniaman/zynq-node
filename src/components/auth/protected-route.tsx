@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { PuffLoader } from "react-spinners";
+import { EmailVerificationRequired } from "./email-verification-required";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -14,14 +15,14 @@ export function ProtectedRoute({
   children,
   redirectTo = "/login",
 }: ProtectedRouteProps) {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, user, isEmailVerified } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    if (!isLoading && !user) {
       router.push(redirectTo);
     }
-  }, [isAuthenticated, isLoading, router, redirectTo]);
+  }, [user, isLoading, router, redirectTo]);
 
   // Show loading state while checking authentication
   if (isLoading) {
@@ -35,7 +36,17 @@ export function ProtectedRoute({
     );
   }
 
-  // Don't render children if not authenticated
+  // Don't render anything if no user
+  if (!user) {
+    return null;
+  }
+
+  // Show email verification required if user exists but email is not verified
+  if (user && !isEmailVerified) {
+    return <EmailVerificationRequired user={user} />;
+  }
+
+  // Only render children if user is authenticated and email is verified
   if (!isAuthenticated) {
     return null;
   }

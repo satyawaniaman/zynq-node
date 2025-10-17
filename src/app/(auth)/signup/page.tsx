@@ -35,8 +35,16 @@ export default function SignupPage() {
       if (result.error) {
         setError(result.error.message || "Sign up failed");
       } else {
-        // Show OTP verification instead of redirecting
-        setShowOTPVerification(true);
+        // Send OTP for email verification
+        try {
+          await authClient.emailOtp.sendVerificationOtp({
+            email,
+            type: "email-verification",
+          });
+          setShowOTPVerification(true);
+        } catch (otpError) {
+          setError("Failed to send verification code. Please try again.");
+        }
       }
     } catch (_err) {
       setError("An unexpected error occurred");
