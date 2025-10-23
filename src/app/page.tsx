@@ -1,18 +1,12 @@
-import { caller, getQueryClient, trpc } from '@/trpc/server';
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
-import { Users } from './client';
-import { Suspense } from 'react';
+import { caller } from "@/trpc/server";
+
 
 export default async function Home() {
-  const queryClient = getQueryClient();
-  void queryClient.prefetchQuery(trpc.getUsers.queryOptions());
+  const users= await caller.getUsers();
   return (
     <div className='min-h-screen flex flex-col items-center justify-center min-w-screen'>
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <Suspense fallback={<p>Loading...</p>}>
-          <Users /> 
-        </Suspense>
-      </HydrationBoundary>
+      <h1 className="text-2xl font-bold mb-4">Welcome to ZynqNode</h1>
+      {JSON.stringify(users)}
     </div>
   );
 }
