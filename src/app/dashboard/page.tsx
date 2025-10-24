@@ -1,50 +1,23 @@
-"use client";
 
-import { ProtectedRoute } from "@/components/auth/protected-route";
-import { useAuth } from "@/hooks/use-auth";
-import { Button } from "@/components/ui/button";
+import { isAuthenticated } from "@/lib/auth-utils";
+import { caller } from "@/trpc/server";
+import LogoutButton from "../features/auth/components/logout-button";
 
-export default function DashboardPage() {
-  const { user, signOut } = useAuth();
-
+async function DashboardPage() {
+   await isAuthenticated();
+  const data = await caller.getUsers();
   return (
-    <ProtectedRoute>
-      <div className="min-h-screen bg-black text-white">
-        <div className="container mx-auto px-4 py-8">
-          {/* Header */}
-          <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold">Dashboard</h1>
-            <Button
-              onClick={signOut}
-              variant="outline"
-              className="text-white border-white/20 hover:bg-white/10"
-            >
-              Sign Out
-            </Button>
-          </div>
-
-          {/* User Info Card */}
-          <div className="bg-white/5 p-6 rounded-lg border border-white/10 mb-8">
-            <h2 className="text-xl font-semibold mb-4">Welcome back!</h2>
-            {user && (
-              <div className="space-y-2">
-                <p className="text-gray-300">
-                  <span className="font-medium">Email:</span> {user.email}
-                </p>
-                {user.name && (
-                  <p className="text-gray-300">
-                    <span className="font-medium">Name:</span> {user.name}
-                  </p>
-                )}
-                <p className="text-gray-300">
-                  <span className="font-medium">User ID:</span> {user.id}
-                </p>
-              </div>
-            )}
-          </div>
-
+    <div className="min-h-screen p-8">
+      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
+      <p className="text-gray-600">You have {data.length} users in your database.</p>
+      {data.map((user) => (
+        <div key={user.id} className="mt-4 p-4 bg-gray-50 rounded-lg">
+          <p className="text-sm font-medium text-gray-800">{user.email}</p>
         </div>
-      </div>
-    </ProtectedRoute>
+      ))}
+      <LogoutButton />
+    </div>
   );
 }
+
+export default DashboardPage;

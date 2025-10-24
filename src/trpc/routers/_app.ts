@@ -1,60 +1,18 @@
-import prisma from "@/lib/db";
-import { createTRPCRouter, protectedProcedure, adminProcedure } from "../init";
-
+import { inngest } from '@/inngest/client';
+import {  createTRPCRouter, protectedProcedure } from '../init';
+import prisma from '@/lib/db';
 export const appRouter = createTRPCRouter({
-  // Get current user data
-  getCurrentUser: protectedProcedure.query(({ ctx }) => {
-    return prisma.user.findUnique({
-      where: {
-        id: ctx.user.id,
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        emailVerified: true,
-        image: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
+  getWorkflows: protectedProcedure.query(() => {
+    return prisma.workflow.findMany();
   }),
-
-  // Get all users (admin only)
-  getAllUsers: adminProcedure.query(({ ctx }) => {
-    return prisma.user.findMany({
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        emailVerified: true,
-        image: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-      orderBy: {
-        createdAt: "desc",
+  createWorkflow: protectedProcedure.mutation(async () => {
+    await inngest.send({
+      name: 'test/hello.world',
+      data: {
+        email: 'test@example.com',
       },
     });
-  }),
-
-  // Get user sessions (for current user)
-  getUserSessions: protectedProcedure.query(({ ctx }) => {
-    return prisma.session.findMany({
-      where: {
-        userId: ctx.user.id,
-      },
-      select: {
-        id: true,
-        expiresAt: true,
-        createdAt: true,
-        ipAddress: true,
-        userAgent: true,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+    return { success: true, message: 'Workflow created' };
   }),
 });
 
