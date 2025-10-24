@@ -14,7 +14,13 @@ export const appRouter = createTRPCRouter({
     });
     return { success: true, message: 'Workflow created' };
   }),
-});
+  testAi: protectedProcedure.mutation(async () => {
+    await inngest.send({
+      name: 'execute/ai',
+    })
+    return { success: true, message: 'AI Workflow created' };
+  }),
+}); 
 
 // export type definition of API
 export type AppRouter = typeof appRouter;
