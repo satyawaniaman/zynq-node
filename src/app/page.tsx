@@ -4,7 +4,7 @@ import { useTRPC } from "@/trpc/client";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-export default async function Home() {
+export default function Home() {
   const trpc = useTRPC()
   
   // Query workflows with error handling for authentication
