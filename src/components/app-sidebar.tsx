@@ -23,8 +23,7 @@ import {
   SidebarMenu,
 } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth-client";
-// import { auth } from "@/lib/auth";
-// import { useHasActiveSubscription } from "@/features/subscriptions/hooks/use-subscription";
+import { useHasActiveSubscription } from "@/app/features/subscriptions/hooks/use-subscription";
 
 const menuItems = [
   {
@@ -47,15 +46,14 @@ const menuItems = [
 export const AppSidebar = () => {
   const pathname = usePathname();
   const router = useRouter();
-//   const { hasActiveSubscription } = useHasActiveSubscription();
-//   const signOut = authClient.signOut;
+  const { hasActiveSubscription } = useHasActiveSubscription();
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <SidebarMenuButton asChild className="gap-x-4 h-12 px-4">
           <Link href="/workflows" prefetch>
             <Image src="logo.svg" alt="NodeBase" width={32} height={32} />
-            <span className="text-sm font-semibold">ZynqNode</span>
+            <span className="text-sm font-semibold">zynqNode</span>
           </Link>
         </SidebarMenuButton>
       </SidebarHeader>
@@ -88,24 +86,26 @@ export const AppSidebar = () => {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
+            {hasActiveSubscription ? null : (
             <SidebarMenuButton
               tooltip="Upgrade to Pro"
               asChild
               className="gap-x-4 h-10 px-4"
-            //   onClick={() => authClient.checkout({ slug: "pro" })}
+              onClick={() => authClient.checkout({ slug: "pro" })}
             >
               <Link href="/" prefetch>
                 <StarIcon className="h-4 w-4" />
                 <span>Upgrade to Pro</span>
               </Link>
             </SidebarMenuButton>
+            )}
           </SidebarMenuItem>
                     <SidebarMenuItem>
             <SidebarMenuButton
-            //   tooltip={hasActiveSubscription ? "View Billing" : "Upgrade to Pro"}
+              tooltip={hasActiveSubscription ? "View Billing" : "Upgrade to Pro"}
               asChild
               className="gap-x-4 h-10 px-4"
-            //   onClick={() => authClient.customer.portal()}
+              onClick={() => authClient.customer.portal()}
             >
               <Link href="/" prefetch>
                 <CreditCardIcon className="h-4 w-4" />
