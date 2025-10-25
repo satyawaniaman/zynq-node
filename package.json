@@ -12,7 +12,8 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
-    "dev:all": "mprocs"
+    "dev:all": "mprocs",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@ai-sdk/google": "^2.0.23",
