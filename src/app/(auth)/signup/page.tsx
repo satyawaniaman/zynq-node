@@ -1,9 +1,9 @@
 import { RegisterForm } from '@/app/features/auth/components/register-form';
-import { redirectIfAuthenticated } from "@/lib/auth-utils";
+import { requireAuth } from "@/lib/auth-utils";
 
 async function SignupPage() {
   // Redirect to dashboard if already authenticated
-  await redirectIfAuthenticated();
+  await requireAuth();
   
   return (
     <RegisterForm/>
